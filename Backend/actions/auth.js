@@ -19,7 +19,7 @@ const registerUser = async (req, res) => {
 
     // Generate JWT token
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-      expiresIn: '1h',
+      expiresIn: '10h',
     });
 
     res.status(201).json({
@@ -64,6 +64,7 @@ const loginUser = async (req, res) => {
         username: user.username,
         email: user.email,
       },
+      otpRequired: true,
     });
   } catch (error) {
     res.status(500).json({ message: 'Server error', error });

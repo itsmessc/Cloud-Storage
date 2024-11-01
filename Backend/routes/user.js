@@ -6,6 +6,7 @@ const User = require('../models/user');
 const otpGenerator = require('otp-generator');
 const nodemailer = require('nodemailer');
 const router = express.Router();
+const jwt=require('jsonwebtoken');
 // Route to fetch all folders and files (public and private) of a user
 router.get('/:userId/folders', protect, getUserFoldersAndFiles);
 
@@ -56,16 +57,17 @@ router.post('/validateotp', async (req, res) => {
             return res.status(400).send('OTP record not found');
         }
 
-        if (otpRecord.otp === otp) {
+        if (otpRecord.matchotp(otp)) {
             // Check if user exists
             const user = await User.findOne({ email });
 
-            if (user) {
-                const token=jwt.sign({_id:user._id,role:user.role},process.env.JWT_SECRET,{expiresIn:'1h'});
-                res.status(200).json({ message: 'OTP verified successfully', exists: true ,token});
-            } else {
-                res.status(200).json({ message: 'OTP verified successfully', exists: false });
-            }
+                const token=jwt.sign({id:user._id},process.env.JWT_SECRET,{expiresIn:'1h'});
+                res.status(200).json({ message: 'OTP verified successfully',token,
+                    user: {
+                      id: user._id,
+                      username: user.username,
+                      email: user.email,
+                    },});
         } else {
             res.status(400).send('Invalid OTP');
         }
@@ -75,6 +77,23 @@ router.post('/validateotp', async (req, res) => {
     }
 });
 
+router.post('/check-username', async (req, res) => {
+    const { username } = req.body;
+  
+    try {
+      // Check if a user with the given username exists
+      const existingUser = await User.findOne({ username });
+  
+      if (existingUser) {
+        return res.status(200).json({ available: false, message: 'Username already taken' });
+      } else {
+        return res.status(200).json({ available: true, message: 'Username is available' });
+      }
+    } catch (error) {
+      console.error('Error checking username availability:', error);
+      return res.status(500).json({ available: null, message: 'Server error, please try again later.' });
+    }
+  });
 
 
 module.exports = router;

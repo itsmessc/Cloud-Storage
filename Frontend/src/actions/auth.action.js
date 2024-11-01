@@ -1,6 +1,8 @@
 import axiosinstance from "../helpers/axios";
 import { authconstant } from "./constants";
 
+
+
 export const login = (user) => {
     return async (dispatch) => {
         dispatch({
@@ -11,17 +13,23 @@ export const login = (user) => {
             const response = await axiosinstance.post('/api/auth/login', user);
 
             if (response.status === 200) {
-                const { token, user } = response.data;
-                localStorage.setItem('token', token);
-                localStorage.setItem('user', JSON.stringify(user));
+                const { token, user, otpRequired } = response.data;
 
-                dispatch({
-                    type: authconstant.LOGIN_SUCCESS,
-                    payload: {
-                        token,
-                        user
-                    }
-                });
+                if (otpRequired) {
+                    // Don't store token until OTP is verified
+                    return { otpRequired: true };
+                } else {
+                    localStorage.setItem('token', token);
+                    localStorage.setItem('user', JSON.stringify(user));
+
+                    dispatch({
+                        type: authconstant.LOGIN_SUCCESS,
+                        payload: {
+                            token,
+                            user
+                        }
+                    });
+                }
             } else {
                 dispatch({
                     type: authconstant.LOGIN_FAILURE,
@@ -82,3 +90,51 @@ export const Signout = ()=>{
         
     }
 }
+export const requestOtp = (email) => {
+    return async (dispatch) => {
+        try {
+            const response = await axiosinstance.post('/api/user/sendOTP', { email });
+            if (response.status === 200) {
+                dispatch({
+                    type: authconstant.OTP_REQUEST_SUCCESS,
+                    payload: { message: response.data.message }
+                });
+            }
+        } catch (error) {
+            console.error('Error requesting OTP:', error);
+            dispatch({
+                type: authconstant.OTP_REQUEST_FAILURE,
+                payload: { error: 'Failed to send OTP. Please try again.' }
+            });
+        }
+    };
+};
+
+export const verifyOtp = (data) => {
+    return async (dispatch) => {
+        try {
+            const response = await axiosinstance.post('/api/user/validateotp', data);
+            if (response.status === 200) {
+                const { token, user } = response.data;
+                localStorage.setItem('token', token);
+                localStorage.setItem('user', JSON.stringify(user));
+
+                dispatch({
+                    type: authconstant.LOGIN_SUCCESS,
+                    payload: { token, user }
+                });
+            } else {
+                dispatch({
+                    type: authconstant.OTP_VERIFICATION_FAILURE,
+                    payload: { error: 'Invalid OTP' }
+                });
+            }
+        } catch (error) {
+            console.error('Error verifying OTP:', error);
+            dispatch({
+                type: authconstant.OTP_VERIFICATION_FAILURE,
+                payload: { error: 'Server error. Please try again.' }
+            });
+        }
+    };
+};

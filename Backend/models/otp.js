@@ -27,7 +27,7 @@ otpSchema.pre('save', async function (next) {
     next();
   });
   
-otpSchema.methods.matchPassword = async function (enteredPassword) {
+otpSchema.methods.matchotp = async function (enteredPassword) {
 return await bcrypt.compare(enteredPassword, this.otp);
 };
 

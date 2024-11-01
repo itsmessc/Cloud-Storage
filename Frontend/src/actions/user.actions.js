@@ -3,6 +3,7 @@ import { userConstants } from "./constants";
 
 
 
+
 export const signup = (user) => {
     return async (dispatch) => {
         dispatch({
@@ -21,6 +22,7 @@ export const signup = (user) => {
                         message
                     }
                 });
+                navigator.navigate('/');
             } else {
                 dispatch({
                     type: userConstants.USER_REGISTER_FAILURE,
