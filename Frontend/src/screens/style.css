@@ -1,9 +1,103 @@
-.sideBar{
-    position: fixed;
+/* Header.css */
+html {
+    scroll-behavior: smooth;
+  }
+  
+  #header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 60px;
+    background: #536cdb;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.06);
+    z-index: 999;
+    position: sticky;
     top: 0;
-    bottom: 0;
     left: 0;
-    background-color: #eee;
-    padding-top: 60px;
-    box-shadow: inset 0 0 2px gray;
-}
+  }
+  
+  #navbar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .logo{
+    height: 70px;
+    width: 70px;
+  }
+
+  #name{
+    font-size: 30px;
+    color: white;
+    font-weight: 600;
+    margin-left: 250px;
+  }
+
+  #name2{
+    font-size: 30px;
+    color: white;
+    font-weight: 600;
+    margin-left: 100px;
+  }
+  
+  #navbar li {
+    list-style: none;
+    padding: 0 20px;
+    position: relative;
+  }
+  
+  #navbar li a {
+    text-decoration: none;
+    font-size: 18px;
+    font-weight: 600;
+    color: #fffcfc;
+    transition: 0.3s ease;
+  }
+  
+  
+  #navbar li a:hover,
+  #navbar li a.active {
+    color: #051e1c;
+  }
+  
+  #navbar li a.active::after,
+  #navbar li a:hover::after {
+    content: "";
+    width: 30%;
+    height: 2px;
+    background: #051e1c;
+    position: absolute;
+    bottom: -4px;
+    left: 20px;
+  }
+
+  #navbar li span {
+    text-decoration: none;
+    font-size: 18px;
+    font-weight: 600;
+    color: #fffcfc;
+    transition: 0.3s ease;
+  }
+  
+  
+  #navbar li span:hover,
+  #navbar li span.active {
+    color: #051e1c;
+  }
+  
+  #navbar li span.active::after,
+  #navbar li span:hover::after {
+    content: "";
+    width: 30%;
+    height: 2px;
+    background: #051e1c;
+    position: absolute;
+    bottom: -4px;
+    left: 20px;
+  }
+  
+  #mobile {
+    display: none;
+  }
+  

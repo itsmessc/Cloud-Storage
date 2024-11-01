@@ -1,0 +1,122 @@
+/* SearchBar.css */
+.search {
+    margin-top: 30px;
+    margin-left: 250px;
+    display: inline-block;
+    position: relative;
+  }
+  
+  .search input[type="text"] {
+    width: 800px;
+    padding: 10px;
+    height: 50px;
+    border: none;
+    border-radius: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.6);
+  }
+  
+  .search button[type="submit"] {
+    background-color: #316398;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    padding: 10px 20px;
+    height: 50px;
+    border-radius: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    position: absolute;
+    top: 0;
+    right: 0;
+    transition: .9s ease;
+  }
+  
+  .search button[type="submit"]:hover {
+    transform: scale(1.1);
+    color: rgb(255, 255, 255);
+    background-color: blue;
+  }
+  
+  .suggestions-list {
+    position: absolute;
+    width: 800px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    max-height: 200px;
+    overflow-y: auto;
+    margin-top: 5px;
+    margin-left: 250px;
+    z-index: 20;
+  }
+  
+  .suggestions-list-item {
+    padding: 12px 15px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .suggestions-list-item:hover {
+    background-color: #e6f3ff;
+  }
+  
+  /* File and Folder List */
+  .files-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-top: 20px;
+  }
+  
+  .file-card {
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 180px;
+    text-align: center;
+    transition: transform 0.3s ease;
+    z-index: 999;
+  }
+  
+  .file-card:hover {
+    transform: scale(1.05);
+  }
+  
+  .file-card h6 {
+    margin-top: 10px;
+    font-size: 16px;
+    color: #333;
+  }
+  
+  .file-card .download-btn {
+    background-color: #4e99e9;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .file-card .download-btn:hover {
+    background-color: #316398;
+  }
+
+
+  .welcome-text {
+    position: absolute;
+    top: 60%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 150px;
+    color: #06284d;
+    font-family: "Brush Script MT", cursive;
+    text-align: center;
+    transition: opacity 0.5s ease; /* Smooth transition for opacity change */
+  }
+  
+  

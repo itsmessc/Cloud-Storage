@@ -19,20 +19,28 @@ function Layout() {
       <a href="/">
         <img src={logo} className="logo" alt="App Logo" />
       </a>
-      <div id="name2">
+      <div id="name">
         <h2>VaultSecure</h2>
       </div>
       <div>
         <ul id="navbar">
           <li>
-            <Link className={location.pathname === "/signup" ? "active" : ""} to="/signup">
-              Signup
+            <Link className={location.pathname === "/" ? "active" : ""} to="/">
+              Home
             </Link>
           </li>
           <li>
-            <Link className={location.pathname === "/signin" ? "active" : ""} to="/signin">
-              Signin
+            <Link className={location.pathname === "/folders" ? "active" : ""} to="/folders">
+              Folders
             </Link>
+          </li>
+          <li>
+            <Link className={location.pathname === "/verify" ? "active" : ""} to="/verify">
+              Verify
+            </Link>
+          </li>
+          <li onClick={handleSignout} style={{ cursor: "pointer" }}>
+            <span>Signout</span>
           </li>
         </ul>
       </div>
