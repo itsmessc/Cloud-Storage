@@ -27,9 +27,9 @@ function App() {
         <Route
           path="/"
           element={
-            <PrivateRoute>
+            
               <Home />
-            </PrivateRoute>
+            
           }
         />
         <Route
@@ -43,9 +43,7 @@ function App() {
         <Route
           path="/verify"
           element={
-            <PrivateRoute>
               <Verify />
-            </PrivateRoute>
           }
         />
         <Route path="/signin" element={<Signin />} />

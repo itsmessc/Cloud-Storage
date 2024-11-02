@@ -22,7 +22,7 @@ export const signup = (user) => {
                         message
                     }
                 });
-                navigator.navigate('/');
+                return response;
             } else {
                 dispatch({
                     type: userConstants.USER_REGISTER_FAILURE,

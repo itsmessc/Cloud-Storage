@@ -5,7 +5,7 @@ const User = require("../models/user");
 // Controller function to fetch a user's folders and files
 exports.getUserFoldersAndFiles = async (req, res) => {
     const { userId } = req.params;
-    const requesterId = req.user.id; // Assumes `auth` middleware sets `req.user` with token payload
+     // Assumes `auth` middleware sets `req.user` with token payload
 
     try {
         // Verify that the user exists
@@ -16,9 +16,9 @@ exports.getUserFoldersAndFiles = async (req, res) => {
 
         // Determine query criteria based on whether the requester is the owner
         const folderCriteria = { owner: userId };
-        if (requesterId !== userId) {
-            folderCriteria.isPublic = true; // Only public folders if requester isn't the owner
-        }
+        
+            folderCriteria.isPublic = true;
+      
 
         // Find folders based on criteria
         const folders = await Folder.find(folderCriteria);

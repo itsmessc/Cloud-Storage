@@ -8,7 +8,7 @@ const nodemailer = require('nodemailer');
 const router = express.Router();
 const jwt=require('jsonwebtoken');
 // Route to fetch all folders and files (public and private) of a user
-router.get('/:userId/folders', protect, getUserFoldersAndFiles);
+router.get('/:userId/folders', getUserFoldersAndFiles);
 
 router.post('/sendOTP', async (req, res) => {
     const { email } = req.body;
@@ -68,6 +68,29 @@ router.post('/validateotp', async (req, res) => {
                       username: user.username,
                       email: user.email,
                     },});
+        } else {
+            res.status(400).send('Invalid OTP');
+        }
+    } catch (error) {
+        console.error('Error validating OTP:', error);
+        res.status(500).send('Failed to validate OTP');
+    }
+});
+
+router.post('/verifyotp', async (req, res) => {
+    const { email, otp } = req.body;
+
+    try {
+        const otpRecord = await Otp.findOne({ email });
+
+        if (!otpRecord) {
+            return res.status(400).send('OTP record not found');
+        }
+
+        if (otpRecord.matchotp(otp)) {
+            // Check if user exists
+            
+                res.status(200).json({ message: 'OTP verified successfully'});
         } else {
             res.status(400).send('Invalid OTP');
         }

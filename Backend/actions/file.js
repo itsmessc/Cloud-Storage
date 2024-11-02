@@ -12,15 +12,31 @@ const uploadFile = async (req, res) => {
   }
 
   try {
-    if(folder){
+    if (folder) {
       const folders = await Folder.findById(folder);
       console.log(folders);
       if (!folders) return res.status(404).json({ message: 'Folder not found' });
     }
 
+    // Generate a unique filename if one already exists with the same name and folder
+    let uniqueFilename = file.originalname;
+    let counter = 1;
+
+    // Check if a file with the same name exists in the folder
+    while (await File.findOne({ filename: uniqueFilename, folder: folder })) {
+      // Extract file name and extension
+      const fileParts = file.originalname.split('.');
+      const fileExtension = fileParts.length > 1 ? `.${fileParts.pop()}` : '';
+      const fileBaseName = fileParts.join('.');
+
+      // Append a number to the file name
+      uniqueFilename = `${fileBaseName}_${counter}${fileExtension}`;
+      counter++;
+    }
+
     // Use the authenticated user's id and username from the protect middleware
     const newFile = new File({
-      filename: file.originalname,
+      filename: uniqueFilename,
       fileUrl: file.path, // Path where the file is stored locally
       folder: folder,
       owner: req.user._id, // Set the owner from the authenticated user
@@ -36,6 +52,7 @@ const uploadFile = async (req, res) => {
     res.status(500).json({ message: 'Server error', error });
   }
 };
+
 
 
 // Get File by ID

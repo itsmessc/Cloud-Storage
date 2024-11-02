@@ -1,6 +1,6 @@
 import React from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Signout } from "../../actions/auth.action";
 import logo from "./logo.png";
 
@@ -8,10 +8,14 @@ function Layout() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
+  const auth=useSelector(state=>state.auth)
+  // Check if a token exists to determine if the user is authenticated
+  const isAuthenticated = auth.authenticate;
 
   const handleSignout = () => {
     dispatch(Signout());
-    navigate("/signup");
+    localStorage.removeItem("token"); // Remove token from local storage
+    navigate("/signup"); // Redirect to signup
   };
 
   return (
@@ -24,24 +28,56 @@ function Layout() {
       </div>
       <div>
         <ul id="navbar">
-          <li>
-            <Link className={location.pathname === "/" ? "active" : ""} to="/">
-              Home
-            </Link>
-          </li>
-          <li>
-            <Link className={location.pathname === "/folders" ? "active" : ""} to="/folders">
-              Folders
-            </Link>
-          </li>
-          <li>
-            <Link className={location.pathname === "/verify" ? "active" : ""} to="/verify">
-              Verify
-            </Link>
-          </li>
-          <li onClick={handleSignout} style={{ cursor: "pointer" }}>
-            <span>Signout</span>
-          </li>
+          {isAuthenticated ? (
+            <>
+              <li>
+                <Link className={location.pathname === "/" ? "active" : ""} to="/">
+                  Home
+                </Link>
+              </li>
+              <li>
+                <Link className={location.pathname === "/folders" ? "active" : ""} to="/folders">
+                  Folders
+                </Link>
+              </li>
+              <li>
+                <Link className={location.pathname === "/verify" ? "active" : ""} to="/verify">
+                  Verify
+                </Link>
+              </li>
+              <li onClick={handleSignout} style={{ cursor: "pointer" }}>
+                <span>Signout</span>
+              </li>
+            </>
+          ) : (
+            <>
+            <li>
+                <Link className={location.pathname === "/" ? "active" : ""} to="/">
+                  Home
+                </Link>
+              </li>
+              <li>
+                <Link className={location.pathname === "/folders" ? "active" : ""} to="/folders">
+                  Folders
+                </Link>
+              </li>
+              <li>
+                <Link className={location.pathname === "/verify" ? "active" : ""} to="/verify">
+                  Verify
+                </Link>
+              </li>
+              <li>
+                <Link className={location.pathname === "/signup" ? "active" : ""} to="/signup">
+                  Signup
+                </Link>
+              </li>
+              <li>
+                <Link className={location.pathname === "/signin" ? "active" : ""} to="/signin">
+                  Signin
+                </Link>
+              </li>
+            </>
+          )}
         </ul>
       </div>
       <div id="mobile">

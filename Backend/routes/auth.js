@@ -40,6 +40,6 @@ router.post(
 
 // Get user profile (Protected route)
 router.get('/profile', authMiddleware, getUserProfile);
-router.get('/search', protect, searchUserByUsername);
+router.get('/search', searchUserByUsername);
 
 module.exports = router;

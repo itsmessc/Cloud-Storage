@@ -15,7 +15,6 @@ function Home() {
   const [folders, setFolders] = useState([]);
   const [currentDisplay, setCurrentDisplay] = useState([]);
   const [folderStack, setFolderStack] = useState([]);
-  const [welcomeOpacity, setWelcomeOpacity] = useState(1); // Track opacity
   const auth = useSelector((state) => state.auth);
 
   useEffect(() => {
@@ -23,7 +22,6 @@ function Home() {
       const delayDebounceFn = setTimeout(() => {
         fetchSuggestions();
       }, 300);
-
       return () => clearTimeout(delayDebounceFn);
     } else {
       setSuggestions([]);
@@ -64,15 +62,6 @@ function Home() {
     fetchUserFoldersAndFiles();
   }, [selectedUser]);
 
-  // Adjust welcome text opacity based on file display
-  useEffect(() => {
-    if (currentDisplay.length > 0) {
-      setWelcomeOpacity(0.3);
-    } else {
-      setWelcomeOpacity(1);
-    }
-  }, [currentDisplay]);
-
   const fetchSuggestions = async () => {
     const token = localStorage.getItem("token");
     try {
@@ -109,7 +98,7 @@ function Home() {
           },
         }
       );
-      setUsers(response.data);
+      handleUserSelect(response.data[0]);
       setSuggestions([]);
     } catch (err) {
       console.error("Error fetching users:", err);
@@ -167,24 +156,25 @@ function Home() {
   return (
     <div>
       <Layout />
-      <div
-        className="welcome-text"
-        style={{ opacity: welcomeOpacity }} // Dynamic opacity
-      >
-        Welcome to VaultSecure
-      </div>
+      {!selectedUser && currentDisplay.length === 0 && (
+        <div className="welcome-text">
+          Welcome to VaultSecure
+        </div>
+      )}
       <Container>
         <Row className="mb-4">
           <Col>
-            <Form onSubmit={handleSearch} className="search">
-              <input
-                type="text"
-                placeholder="Search..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-              <button type="submit">Go</button>
-            </Form>
+            <div className="search-container">
+              <Form onSubmit={handleSearch} className="search">
+                <input
+                  type="text"
+                  placeholder="Search..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
+                <button type="submit">Go</button>
+              </Form>
+            </div>
 
             {suggestions.length > 0 && (
               <div className="suggestions-list">
@@ -221,22 +211,49 @@ function Home() {
                 </Button>
               )}
 
-              <div className="files-container">
-                {currentDisplay.map((item) => (
-                  <div className="file-card" key={item._id}>
-                    <h6>{item.files ? item.name : item.filename}</h6>
-                    
-                      <Button
-                        className="download-btn"
+              <div className="files-list">
+                <div className="list-header">
+                  <span className="list-header-item name-column">Name</span>
+                  <span className="list-header-item type-column">Type</span>
+                  <span className="list-header-item action-column">Actions</span>
+                </div>
+
+                {currentDisplay.length > 0 ? (
+                  currentDisplay.map((item) => (
+                    <div className="list-item" key={item._id}>
+                      <span
+                        className="item-name"
                         onClick={() =>
-                          handleDownload(item._id, item.filename)
+                          item.files
+                            ? handleFolderClick(item)
+                            : handleDownload(item._id, item.filename)
                         }
                       >
-                        Download
-                      </Button>
-                    
+                        {item.name || item.filename}
+                      </span>
+                      <span className="item-type">
+                        {item.files ? "Folder" : "File"}
+                      </span>
+                      <div className="item-actions">
+                        {!item.files && (
+                          <Button
+                            className="download-btn"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleDownload(item._id, item.filename);
+                            }}
+                          >
+                            Download
+                          </Button>
+                        )}
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <div className="empty-folder">
+                    <h6>No files in folder</h6>
                   </div>
-                ))}
+                )}
               </div>
             </Col>
           </Row>

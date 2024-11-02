@@ -119,4 +119,68 @@
     transition: opacity 0.5s ease; /* Smooth transition for opacity change */
   }
   
+  .files-list {
+    width: 100%;
+  }
   
+  .list-header,
+  .list-item {
+    display: flex;
+    padding: 10px 15px;
+    border-bottom: 1px solid #ddd;
+    align-items: center;
+  }
+  
+  .list-header {
+    font-weight: bold;
+    color: #444;
+    background-color: #f5f5f5;
+  }
+  
+  .list-header-item,
+  .item-type,
+  .item-actions {
+    flex: 1;
+  }
+  
+  .item-name{
+    flex: 3;
+  }
+
+  .name-column {
+    flex: 3; /* Adjust the width as needed */
+  }
+  
+  .type-column {
+    flex: 1;
+  }
+  
+  .action-column {
+    flex: 1;
+  }
+  
+  .item-name {
+    cursor: pointer;
+  }
+  
+  .item-name:hover {
+    color: #000000;
+    font-weight: bold;
+  }
+  
+  .item-actions .download-btn {
+    padding: 5px 10px;
+    font-size: 0.9em;
+  }
+  
+  .empty-folder {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100px;
+    font-size: 18px;
+    color: #555;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  }

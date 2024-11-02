@@ -3,7 +3,7 @@ import FileUpload from './FileUpload';
 import axios from 'axios';
 import { useSelector } from 'react-redux';
 import Layout from "../components/Layout";
-import './Folder.css'; // Import CSS for custom styles
+import './Folder.css';
 
 const Folder = () => {
   const auth = useSelector((state) => state.auth);
@@ -13,7 +13,8 @@ const Folder = () => {
   const [folders, setFolders] = useState([]);
   const [files, setFiles] = useState([]);
   const [folderHistory, setFolderHistory] = useState([null]);
-  const [menuVisible, setMenuVisible] = useState(null);
+  const [openDropdown, setOpenDropdown] = useState(null); // Track open dropdown
+  const [uploadModalOpen, setUploadModalOpen] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -37,18 +38,31 @@ const Folder = () => {
     fetchData();
   }, [folderId, token]);
 
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (!e.target.closest('.menu-dropdown') && !e.target.closest('.menu-btn')) {
+        setOpenDropdown(null);
+      }
+    };
+    document.addEventListener('click', handleClickOutside);
+    return () => document.removeEventListener('click', handleClickOutside);
+  }, []);
+
   const handleCreateFolder = async (folderName) => {
+    const name = prompt('Enter folder name:');
+    if (!name) return;
+
     try {
       const res = await axios.post(
         'http://localhost:7878/api/folder/create',
-        { name: folderName, parentFolder: folderId },
+        { name, parentFolder: folderId },
         {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         }
       );
-      setFolders((prev) => [...prev, { _id: res.data._id, name: folderName }]);
+      setFolders((prev) => [...prev, { _id: res.data._id, name }]);
     } catch (error) {
       console.error('Error creating folder:', error);
     }
@@ -66,6 +80,7 @@ const Folder = () => {
         },
       });
       setFiles((prev) => [...prev, res.data.file]);
+      setUploadModalOpen(false);
     } catch (error) {
       console.error('Error uploading file:', error);
     }
@@ -150,72 +165,102 @@ const Folder = () => {
     <div>
       <Layout />
       <div className="folder-container">
-        {/* File Upload and Buttons Area */}
-        <h2 className="add-files-title">Add your files</h2>
+        <h2 className="add-files-title">File Explorer</h2>
+        
         <div className="top-controls">
-          <FileUpload onUpload={handleUpload} />
-          <div className="button-group">
-            <button
-              className="action-button"
-              onClick={() => {
-                const folderName = prompt('Enter folder name:');
-                if (folderName) handleCreateFolder(folderName);
-              }}
-            >
-              Create Folder
-            </button>
-            <button
-              className="action-button"
-              onClick={handleGoBack}
-              disabled={folderHistory.length <= 0}
-            >
-              Go Back
-            </button>
-          </div>
+          <button
+            className="action-button"
+            onClick={handleCreateFolder}
+          >
+            Create Folder
+          </button>
+          <button
+            className="action-button"
+            onClick={handleGoBack}
+            disabled={folderHistory.length <= 0}
+          >
+            Go Back
+          </button>
+          <button
+            className="action-button"
+            onClick={() => setUploadModalOpen(true)}
+          >
+            Upload
+          </button>
         </div>
 
-        {/* Folders and Files Display */}
+        {uploadModalOpen && (
+          <div className="upload-modal">
+            <div className="upload-modal-content">
+              <button className="close-modal" onClick={() => setUploadModalOpen(false)}>×</button>
+              <FileUpload onUpload={handleUpload} />
+            </div>
+          </div>
+        )}
+
         <div className="main-content">
-          <div className="folders-section">
-            <h3 className="section-title">Folders</h3>
-            <div className="folders-container">
-              {folders.map((folder) => (
-                <div className="folder-card" key={folder._id} onDoubleClick={() => handleNavigate(folder._id)}>
-                  <div className="folder-name">{folder.name}</div>
-                  <button className="menu-btn" onClick={() => setMenuVisible(menuVisible === folder._id ? null : folder._id)}>⋮</button>
-                  {menuVisible === folder._id && (
+          <div className="list-header">
+            <span className="list-header-item name-column">Name</span>
+            <span className="list-header-item type-column">Type</span>
+            <span className="list-header-item action-column">Actions</span>
+          </div>
+
+          <div className="folders-list">
+            {folders.map((folder) => (
+              <div className="list-item" key={folder._id} style={{ position: 'relative' }} onDoubleClick={() => handleNavigate(folder._id)}>
+                <span className="item-name">{folder.name}</span>
+                <span className="item-type">Folder</span>
+                <div className="item-actions">
+                  <button
+                    className="menu-btn"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setOpenDropdown(openDropdown === folder._id ? null : folder._id);
+                    }}
+                  >
+                    ⋮
+                  </button>
+                  {openDropdown === folder._id && (
                     <div className="menu-dropdown">
                       {folder.owner === currentUserId && (
-                        <button className="delete-btn" onClick={() => handleDelete(folder._id, true)}>Delete</button>
+                        <button className="delete-btn" onClick={(e) => { e.stopPropagation(); handleDelete(folder._id, true); }}>Delete</button>
                       )}
-                      <button className="visibility-btn" onClick={() => toggleVisibility(folder._id, true, folder.public)}>
+                      <button className="visibility-btn" onClick={(e) => { e.stopPropagation(); toggleVisibility(folder._id, true, folder.isPublic); }}>
                         {folder.isPublic ? 'Make Private' : 'Make Public'}
                       </button>
                     </div>
                   )}
                 </div>
-              ))}
-            </div>
+              </div>
+            ))}
           </div>
 
-          <div className="files-section">
-            <h3 className="section-title">Files</h3>
-            <div className="files-container">
-              {files.map((file) => (
-                <div className="file-card" key={file._id}>
-                  <div className="file-name">{file.filename}</div>
-                  <button className="menu-btn" onClick={() => setMenuVisible(menuVisible === file._id ? null : file._id)}>⋮</button>
-                  {menuVisible === file._id && (
+          <div className="files-list">
+            {files.map((file) => (
+              <div className="list-item" key={file._id} style={{ position: 'relative' }}>
+                <span className="item-name">{file.filename}</span>
+                <span className="item-type">File</span>
+                <div className="item-actions">
+                  <button
+                    className="menu-btn"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setOpenDropdown(openDropdown === file._id ? null : file._id);
+                    }}
+                  >
+                    ⋮
+                  </button>
+                  {openDropdown === file._id && (
                     <div className="menu-dropdown">
-                      <button className="download-btn" onClick={() => handleDownload(file._id, file.filename)}>Download</button>
+                      <button className="download-bn" onClick={(e) => { e.stopPropagation(); handleDownload(file._id, file.filename); }}>Download</button>
                       {file.owner === currentUserId && (
-                        <button className="delete-btn" onClick={() => handleDelete(file._id, false)}>Delete</button>
+                        <button className="delete-btn" onClick={(e) => { e.stopPropagation(); handleDelete(file._id, false); }}>Delete</button>
                       )}
                     </div>
                   )}
                 </div>
-              ))}
-            </div>
+              </div>
+            ))}
           </div>
         </div>
       </div>

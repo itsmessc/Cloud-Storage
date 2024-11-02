@@ -138,3 +138,25 @@ export const verifyOtp = (data) => {
         }
     };
 };
+
+export const validateotp = (data) => {
+    return async (dispatch) => {
+        try {
+            const response = await axiosinstance.post('/api/user/verifyotp', data);
+            if (response.status === 200) {
+               return response;
+            } else {
+                dispatch({
+                    type: authconstant.OTP_VERIFICATION_FAILURE,
+                    payload: { error: 'Invalid OTP' }
+                });
+            }
+        } catch (error) {
+            console.error('Error verifying OTP:', error);
+            dispatch({
+                type: authconstant.OTP_VERIFICATION_FAILURE,
+                payload: { error: 'Server error. Please try again.' }
+            });
+        }
+    };
+};
