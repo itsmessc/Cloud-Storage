@@ -25,6 +25,7 @@ jobs:
         run: |
           cd Backend
           npm install
+          npm build --if-present
       
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
