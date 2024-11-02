@@ -113,7 +113,7 @@ function Signup() {
 
   const checkUsernameAvailability = debounce(async (username) => {
     try {
-      const response = await axios.post("http://localhost:7878/api/user/check-username", { username });
+      const response = await axios.post("https://cs-begvfwd8a4gvddaf.canadacentral-01.azurewebsites.net/api/user/check-username", { username });
       setUsernameAvailable(response.data.available);
     } catch (error) {
       console.error("Error checking username:", error);

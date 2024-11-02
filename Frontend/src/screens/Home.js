@@ -36,7 +36,7 @@ function Home() {
 
       try {
         const response = await axios.get(
-          `http://localhost:7878/api/user/${selectedUser._id}/folders`,
+          `https://cs-begvfwd8a4gvddaf.canadacentral-01.azurewebsites.net/api/user/${selectedUser._id}/folders`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -66,7 +66,7 @@ function Home() {
     const token = localStorage.getItem("token");
     try {
       const response = await axios.get(
-        `http://localhost:7878/api/auth/search?username=${searchTerm}`,
+        `https://cs-begvfwd8a4gvddaf.canadacentral-01.azurewebsites.net/api/auth/search?username=${searchTerm}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -91,7 +91,7 @@ function Home() {
 
     try {
       const response = await axios.get(
-        `http://localhost:7878/api/auth/search?username=${searchTerm}`,
+        `https://cs-begvfwd8a4gvddaf.canadacentral-01.azurewebsites.net/api/auth/search?username=${searchTerm}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -133,7 +133,7 @@ function Home() {
 
     try {
       const res = await axios.get(
-        `http://localhost:7878/api/file/download/${fileId}`,
+        `https://cs-begvfwd8a4gvddaf.canadacentral-01.azurewebsites.net/api/file/download/${fileId}`,
         {
           responseType: "blob",
           headers: {

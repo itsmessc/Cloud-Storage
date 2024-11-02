@@ -20,7 +20,7 @@ const Folder = () => {
     const fetchData = async () => {
       try {
         const res = await axios.post(
-          `http://localhost:7878/api/folder/find${folderId ? `?id=${folderId}` : ''}`,
+          `https://cs-begvfwd8a4gvddaf.canadacentral-01.azurewebsites.net/api/folder/find${folderId ? `?id=${folderId}` : ''}`,
           { id: folderId },
           {
             headers: {
@@ -54,7 +54,7 @@ const Folder = () => {
 
     try {
       const res = await axios.post(
-        'http://localhost:7878/api/folder/create',
+        'https://cs-begvfwd8a4gvddaf.canadacentral-01.azurewebsites.net/api/folder/create',
         { name, parentFolder: folderId },
         {
           headers: {
@@ -73,7 +73,7 @@ const Folder = () => {
       const formData = new FormData();
       formData.append('file', file);
       if (folderId) formData.append('folder', folderId);
-      const res = await axios.post('http://localhost:7878/api/file/upload', formData, {
+      const res = await axios.post('https://cs-begvfwd8a4gvddaf.canadacentral-01.azurewebsites.net/api/file/upload', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
           Authorization: `Bearer ${token}`,
@@ -105,7 +105,7 @@ const Folder = () => {
 
   const handleDelete = async (id, isFolder) => {
     try {
-      await axios.delete(`http://localhost:7878/api/folder/delete/${id}?isFolder=${isFolder}`, {
+      await axios.delete(`https://cs-begvfwd8a4gvddaf.canadacentral-01.azurewebsites.net/api/folder/delete/${id}?isFolder=${isFolder}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -123,7 +123,7 @@ const Folder = () => {
   const toggleVisibility = async (id, isFolder, currentStatus) => {
     try {
       const res = await axios.patch(
-        `http://localhost:7878/api/folder/toggle-visibility/${id}`,
+        `https://cs-begvfwd8a4gvddaf.canadacentral-01.azurewebsites.net/api/folder/toggle-visibility/${id}`,
         { public: !currentStatus },
         {
           headers: {
@@ -143,7 +143,7 @@ const Folder = () => {
 
   const handleDownload = async (fileId, filename) => {
     try {
-      const res = await axios.get(`http://localhost:7878/api/file/download/${fileId}`, {
+      const res = await axios.get(`https://cs-begvfwd8a4gvddaf.canadacentral-01.azurewebsites.net/api/file/download/${fileId}`, {
         responseType: 'blob',
         headers: {
           Authorization: `Bearer ${token}`,

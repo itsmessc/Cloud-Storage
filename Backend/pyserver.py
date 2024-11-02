@@ -7,12 +7,27 @@ from fastapi import FastAPI, File, UploadFile, HTTPException
 from fastapi.responses import StreamingResponse
 import pdfplumber
 from PyPDF2 import PdfReader, PdfWriter
+from dotenv import load_dotenv
+from fastapi.middleware.cors import CORSMiddleware
 
+
+load_dotenv()
 app = FastAPI()
 
 # Define a secret key for HMAC
-SECRET_KEY = b'supersecretkey'  # Ensure this key is securely managed and kept private
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Allow access from any origin
+    allow_credentials=True,
+    allow_methods=["*"],  # Allow all HTTP methods
+    allow_headers=["*"],  # Allow all headers
+)
+
+SECRET_KEY = os.getenv("SECRET_KEY")
+if not SECRET_KEY:
+    raise RuntimeError("SECRET_KEY environment variable not set")  # Ensure this key is securely managed and kept private
+SECRET_KEY=SECRET_KEY.encode('utf-8')
 def compute_hmac(data):
     """Compute HMAC-SHA-384 hash of the provided data using a secret key."""
     return hmac.new(SECRET_KEY, data, hashlib.sha384).hexdigest()

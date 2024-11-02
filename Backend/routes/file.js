@@ -1,5 +1,5 @@
 const express = require('express');
-const { uploadFile, getFileById, deleteFile, viewFile } = require('../actions/file');
+const { uploadFile, getFileById, deleteFile, viewFile,compute } = require('../actions/file');
 const upload = require('../middleware/multer'); // Import multer configuration
 const { protect } = require('../middleware/auth'); // Ensure you create this middleware
 const File = require('../models/file');
@@ -7,7 +7,7 @@ const router = express.Router();
 const path = require('path');
 
 // Upload a file to a folder (use multer to handle file upload)
-router.post('/upload',protect, upload.single('file'), uploadFile);
+router.post('/upload',protect, upload.single('file'),compute, uploadFile);
 
 // Get a file by ID
 router.get('/:id', getFileById);

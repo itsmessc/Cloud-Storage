@@ -1,1 +1,1 @@
-export const api = 'http://localhost:7878/'
+export const api = 'https://cs-begvfwd8a4gvddaf.canadacentral-01.azurewebsites.net/'
