@@ -1,1 +1,1 @@
-export const api = 'https://cs-begvfwd8a4gvddaf.canadacentral-01.azurewebsites.net/'
+export const api = 'https://cdsdd-afbuc7dbb6e9buab.canadacentral-01.azurewebsites.net/'
